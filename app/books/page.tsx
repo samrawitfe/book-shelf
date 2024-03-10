@@ -1,19 +1,7 @@
 import React from "react";
-import BooksGrid from "../components/BooksGrid";
-import { fetchBooks } from "../utils/booksApi";
-import TopNavBar from "../components/TopNavBar";
-import MainContainer from "../components/MainContainer";
+import HomePage from "../components/HomePage";
 
-const BooksPage = async () => {
-  const books = await fetchBooks();
-  return (
-    <div>
-      <TopNavBar isAdmin={false} />
-      <MainContainer className="">
-        <h1 className="text-2xl font-bold mb-4">All Books</h1>
-        <BooksGrid books={books} isAdmin={false} />
-      </MainContainer>
-    </div>
-  );
+const UserHomePage = async () => {
+  return <HomePage isAdmin={false} />;
 };
-export default BooksPage;
+export default UserHomePage;

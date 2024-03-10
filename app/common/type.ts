@@ -12,3 +12,9 @@ export type AdminControl = {
   edit: boolean;
   delete: boolean;
 };
+
+export type BookDetailProps = {
+  params: {
+    bookId: string;
+  };
+};

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import LoginCard from "./components/LoginCard";
-import { fetchBooks } from "./utils/booksApi";
 
 export default async function Home() {
   return (
