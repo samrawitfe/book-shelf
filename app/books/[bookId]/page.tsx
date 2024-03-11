@@ -3,7 +3,7 @@ import BookDetailsModal from "@/app/components/BookDetailsModal";
 import React from "react";
 
 const BookDetails = async ({ params }: BookDetailProps) => {
-  return <BookDetailsModal bookId={params.bookId} />;
+  return <BookDetailsModal bookId={params.bookId} showAdminControls={false} />;
 };
 
 export default BookDetails;

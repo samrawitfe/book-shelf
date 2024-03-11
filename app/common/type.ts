@@ -18,3 +18,8 @@ export type BookDetailProps = {
     bookId: string;
   };
 };
+
+export type BookProps = {
+  book: Book;
+  showAdminControls: boolean;
+};

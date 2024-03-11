@@ -1,34 +1,14 @@
 import React from "react";
 import CloseModalButton from "./CloseModalButton";
+import AdminControls from "./AdminControls";
+import { getBook } from "../utils/api";
 
 interface Props {
   bookId: string;
+  showAdminControls: Boolean;
 }
 
-export async function getBook(bookId: number | string) {
-  try {
-    const response = await fetch(
-      "https://crudcrud.com/api/178684d1afef4531b2ede94d96842317/books/" +
-        bookId,
-      {
-        next: {
-          revalidate: 20,
-        },
-      }
-    );
-    if (!response.ok) {
-      throw new Error("Failed to fetch books");
-    }
-    const books = await response.json();
-    console.log(books);
-    return books;
-  } catch (error: any) {
-    console.log(error.message);
-    return {};
-  }
-}
-
-const BookDetailsModal = async ({ bookId }: Props) => {
+const BookDetailsModal = async ({ bookId, showAdminControls }: Props) => {
   const book = await getBook(bookId);
 
   return (
@@ -43,6 +23,7 @@ const BookDetailsModal = async ({ bookId }: Props) => {
           </h3>
           <CloseModalButton />
         </div>
+
         <div className="mt-2">
           <figure className="px-10 pt-10">
             <img
@@ -57,6 +38,7 @@ const BookDetailsModal = async ({ bookId }: Props) => {
             <p>Publish Date: {book.publishDate}</p>
           </div>
         </div>
+        {showAdminControls && <AdminControls bookId={book._id} />}
       </div>
     </div>
   );

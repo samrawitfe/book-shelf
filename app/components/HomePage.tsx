@@ -1,37 +1,47 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import TopNavBar from "./TopNavBar";
 import MainContainer from "./MainContainer";
-import BooksGrid from "./BooksGrid";
+import BookCard from "./BookCard";
+import { fetchBooks } from "../utils/api";
+import { Book } from "../common/type";
 
-export async function fetchBooks() {
-  try {
-    const response = await fetch(
-      "https://crudcrud.com/api/178684d1afef4531b2ede94d96842317/books",
-      {
-        next: {
-          revalidate: 20,
-        },
-      }
-    );
-    if (!response.ok) {
-      throw new Error("Failed to fetch books");
-    }
-    const books = await response.json();
-    console.log(books);
-    return books;
-  } catch (error: any) {
-    console.log(error.message);
-    return [];
-  }
-}
-const HomePage = async ({ isAdmin = false }) => {
-  const books = await fetchBooks();
+const HomePage = ({ isAdmin = false }) => {
+  const [books, setBooks] = useState<Book[]>([]);
+
+  useEffect(() => {
+    const loadBooks = async () => {
+      const fetchedBooks: Book[] = await fetchBooks();
+      console.log(fetchedBooks);
+      setBooks(fetchedBooks);
+    };
+
+    loadBooks();
+  }, []);
+
+  const onDelete = (bookId: string | number) => {
+    setBooks(books.filter((book: Book) => book._id !== bookId));
+  };
+
   return (
     <div>
       <TopNavBar isAdmin={isAdmin} />
       <MainContainer className="">
         <h1 className="text-2xl font-bold mb-4">All Books</h1>
-        <BooksGrid books={books} isAdmin={isAdmin} />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {books.length === 0 ? (
+            <p>No books found!</p>
+          ) : (
+            books.map((book) => (
+              <BookCard
+                key={book._id}
+                book={book}
+                showAdminControls={isAdmin}
+                onDelete={onDelete}
+              />
+            ))
+          )}
+        </div>
       </MainContainer>
     </div>
   );
