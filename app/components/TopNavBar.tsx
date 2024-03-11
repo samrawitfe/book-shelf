@@ -1,8 +1,14 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
+import { Book } from "../common/type";
+import AddBookButton from "./AddBookButton";
 
-const TopNavBar = ({ isAdmin = false }) => {
+interface Props {
+  isAdmin: boolean;
+  onAddBook: (book: Book) => void;
+}
+const TopNavBar = ({ isAdmin = false, onAddBook }: Props) => {
   const handleSearchClick = () => console.log("Search Clicked");
 
   return (
@@ -36,11 +42,8 @@ const TopNavBar = ({ isAdmin = false }) => {
             />
           </svg>
         </button>
-        {isAdmin && (
-          <a className="btn btn-neutral" href="/">
-            New Book
-          </a>
-        )}
+        {isAdmin && <AddBookButton onAddBook={onAddBook} />}
+
         <Link href="/" className="btn btn-error rounded-lg">
           Logout
         </Link>

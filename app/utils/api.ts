@@ -2,13 +2,13 @@ import { Book } from "../common/type";
 
 const API_ENDPOINT =
   "https://crudcrud.com/api/e5a15f871b2a42039bc731955be7314c/books";
+
 export async function fetchBooks() {
   try {
     const response = await fetch(API_ENDPOINT, {
-      //   next: {
-      //     revalidate: 1,
-      //   },
-      cache: "no-store",
+      next: {
+        revalidate: 10,
+      },
     });
     if (!response.ok) {
       throw new Error("Failed to fetch books");
@@ -23,7 +23,6 @@ export async function fetchBooks() {
 }
 
 export async function getBook(bookId: number | string) {
-  console.log("get is called");
   try {
     const response = await fetch(`${API_ENDPOINT}/${bookId}`, {
       //   next: {
@@ -43,14 +42,9 @@ export async function getBook(bookId: number | string) {
 }
 
 export async function deleteBook(bookId: number | string) {
-  console.log("delete is called");
   try {
     const response = await fetch(`${API_ENDPOINT}/${bookId}`, {
       method: "DELETE",
-      //   next: {
-      //     revalidate: 0,
-      //   },
-      cache: "no-store",
     });
 
     return response;
@@ -61,8 +55,8 @@ export async function deleteBook(bookId: number | string) {
 
 export const saveBook = async (
   formData: Omit<Book, "_id">,
-  bookId?: string
-): Promise<Book> => {
+  bookId?: string | number
+): Promise<Response> => {
   const response = await fetch(
     bookId ? `${API_ENDPOINT}/${bookId}` : API_ENDPOINT,
     {
@@ -72,9 +66,5 @@ export const saveBook = async (
     }
   );
 
-  if (!response.ok) {
-    throw new Error("Network response was not ok");
-  }
-
-  return await response.json();
+  return response;
 };

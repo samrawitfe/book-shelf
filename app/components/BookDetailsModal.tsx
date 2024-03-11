@@ -1,16 +1,35 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import CloseModalButton from "./CloseModalButton";
-import AdminControls from "./AdminControls";
 import { getBook } from "../utils/api";
+import DeleteBookButton from "./DeleteBookButton";
+import EditBookButton from "./EditBookButton";
+import { Book } from "../common/type";
 
 interface Props {
   bookId: string;
   showAdminControls: Boolean;
 }
 
-const BookDetailsModal = async ({ bookId, showAdminControls }: Props) => {
-  const book = await getBook(bookId);
+const BookDetailsModal = ({ bookId, showAdminControls }: Props) => {
+  const [book, setBook] = useState<Book | null>(null);
 
+  useEffect(() => {
+    const fetchBook = async () => {
+      const fetchedBook = await getBook(bookId);
+      setBook(fetchedBook);
+    };
+
+    fetchBook();
+  }, [bookId]);
+  const onBookUpdated = (book: Book) => {
+    console.log("Details edit");
+    console.log(book);
+    setBook(book);
+  };
+  if (!book) {
+    return <div>Loading...</div>;
+  }
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-50 z-40 overflow-y-auto h-full w-full flex justify-center items-start"
@@ -38,7 +57,12 @@ const BookDetailsModal = async ({ bookId, showAdminControls }: Props) => {
             <p>Publish Date: {book.publishDate}</p>
           </div>
         </div>
-        {showAdminControls && <AdminControls bookId={book._id} />}
+        {showAdminControls && (
+          <div className="card-actions ml-1 mr-1 mt-4 space-x-2 w-2/5 ">
+            <EditBookButton book={book} onBookUpdated={onBookUpdated} />
+            <DeleteBookButton bookId={book._id} />
+          </div>
+        )}
       </div>
     </div>
   );

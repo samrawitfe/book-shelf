@@ -19,13 +19,23 @@ const HomePage = ({ isAdmin = false }) => {
     loadBooks();
   }, []);
 
-  const onDelete = (bookId: string | number) => {
+  const onBookDeleted = (bookId: string | number) => {
     setBooks(books.filter((book: Book) => book._id !== bookId));
+  };
+  const onBookAdded = (book: Book) => {
+    setBooks(books.concat([book]));
+  };
+  const onBookEditted = (updatedBook: Book) => {
+    console.log("Home page eddited");
+    console.log(updatedBook);
+    setBooks(
+      books.map((book) => (book._id === updatedBook._id ? updatedBook : book))
+    );
   };
 
   return (
     <div>
-      <TopNavBar isAdmin={isAdmin} />
+      <TopNavBar isAdmin={isAdmin} onAddBook={onBookAdded} />
       <MainContainer className="">
         <h1 className="text-2xl font-bold mb-4">All Books</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -37,7 +47,8 @@ const HomePage = ({ isAdmin = false }) => {
                 key={book._id}
                 book={book}
                 showAdminControls={isAdmin}
-                onDelete={onDelete}
+                onEdit={onBookEditted}
+                onDelete={onBookDeleted}
               />
             ))
           )}

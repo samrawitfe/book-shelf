@@ -1,13 +1,20 @@
 import React from "react";
 import { Book } from "../common/type";
-import AdminControls from "./AdminControls";
+import EditBookButton from "./EditBookButton";
+import DeleteBookButton from "./DeleteBookButton";
 
 interface Props {
   book: Book;
   showAdminControls: boolean;
+  onEdit: (book: Book) => void;
   onDelete: (bookId: string | number) => void;
 }
-const BookCard = ({ book, showAdminControls = false, onDelete }: Props) => {
+const BookCard = ({
+  book,
+  showAdminControls = false,
+  onEdit,
+  onDelete,
+}: Props) => {
   return (
     <div className="card card-compact bg-base-100 shadow-xl rounded-lg hover:scale-105 transition-transform duration-200">
       <a href={`books/${book._id}`}>
@@ -26,7 +33,10 @@ const BookCard = ({ book, showAdminControls = false, onDelete }: Props) => {
         </div>
       </a>
       {showAdminControls && (
-        <AdminControls bookId={book._id} onDelete={onDelete} />
+        <div className="card-actions flex justify-end ml-1 mr-1 mt-4 space-x-2 ">
+          <EditBookButton book={book} onBookUpdated={onEdit} />
+          <DeleteBookButton bookId={book._id} onBookDeleted={onDelete} />
+        </div>
       )}
     </div>
   );

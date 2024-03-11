@@ -2,12 +2,16 @@
 import { useRouter } from "next/navigation";
 import React from "react";
 
-const CloseModalButton = () => {
+interface Props {
+  handleCloseModal?: () => void;
+}
+const CloseModalButton = ({ handleCloseModal }: Props) => {
   const router = useRouter();
 
-  const handleCloseModal = () => {
-    router.back();
-  };
+  if (!handleCloseModal)
+    handleCloseModal = () => {
+      router.back();
+    };
   return (
     <button
       onClick={handleCloseModal}
