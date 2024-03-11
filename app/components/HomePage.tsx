@@ -7,52 +7,81 @@ import { fetchBooks } from "../utils/api";
 import { Book } from "../common/type";
 
 const HomePage = ({ isAdmin = false }) => {
-  const [books, setBooks] = useState<Book[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [allBooks, setAllBooks] = useState<Book[]>([]);
+  const [displayedBooks, setDisplayedBooks] = useState<Book[]>([]);
 
   useEffect(() => {
     const loadBooks = async () => {
-      const fetchedBooks: Book[] = await fetchBooks();
-      console.log(fetchedBooks);
-      setBooks(fetchedBooks);
+      try {
+        const fetchedBooks: Book[] = await fetchBooks();
+        setAllBooks(fetchedBooks);
+        setDisplayedBooks(fetchedBooks);
+      } catch (error) {
+        console.error("Failed to fetch books:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     loadBooks();
   }, []);
 
+  const handleSearch = (query: string) => {
+    if (!query.trim()) {
+      setDisplayedBooks(allBooks);
+    } else {
+      const filteredBooks = allBooks.filter(
+        (book) =>
+          book.title.toLowerCase().includes(query.toLowerCase()) ||
+          book.author.toLowerCase().includes(query.toLowerCase())
+      );
+      setDisplayedBooks(filteredBooks);
+    }
+  };
+
   const onBookDeleted = (bookId: string | number) => {
-    setBooks(books.filter((book: Book) => book._id !== bookId));
+    setAllBooks(allBooks.filter((book: Book) => book._id !== bookId));
   };
   const onBookAdded = (book: Book) => {
-    setBooks(books.concat([book]));
+    setAllBooks(allBooks.concat([book]));
   };
   const onBookEditted = (updatedBook: Book) => {
-    console.log("Home page eddited");
-    console.log(updatedBook);
-    setBooks(
-      books.map((book) => (book._id === updatedBook._id ? updatedBook : book))
+    setAllBooks(
+      allBooks.map((book) =>
+        book._id === updatedBook._id ? updatedBook : book
+      )
     );
   };
 
   return (
     <div>
-      <TopNavBar isAdmin={isAdmin} onAddBook={onBookAdded} />
+      <TopNavBar
+        isAdmin={isAdmin}
+        onAddBook={onBookAdded}
+        onSearch={handleSearch}
+      />
       <MainContainer className="">
         <h1 className="text-2xl font-bold mb-4">All Books</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {books.length === 0 ? (
-            <p>No books found!</p>
-          ) : (
-            books.map((book) => (
-              <BookCard
-                key={book._id}
-                book={book}
-                showAdminControls={isAdmin}
-                onEdit={onBookEditted}
-                onDelete={onBookDeleted}
-              />
-            ))
-          )}
-        </div>
+        {isLoading ? (
+          <p>Loading books...</p> // Simple text loading indicator
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {displayedBooks.length === 0 ? (
+              <p>No books found!</p>
+            ) : (
+              displayedBooks.map((book) => (
+                <BookCard
+                  key={book._id}
+                  book={book}
+                  showAdminControls={isAdmin}
+                  onEdit={onBookEditted}
+                  onDelete={onBookDeleted}
+                />
+              ))
+            )}
+          </div>
+        )}
       </MainContainer>
     </div>
   );

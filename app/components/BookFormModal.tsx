@@ -41,14 +41,16 @@ const BookFormModal = ({ book, onBookSaved, onClose }: Props) => {
 
   const validateForm = () => {
     let isValid = true;
-    let newErrors: { [key: string]: string } = {};
+    const newErrors: { [key: string]: string } = {};
 
     if (!formData.title.trim()) {
+      console.log("Title cannot be empty.");
       isValid = false;
       newErrors.title = "Title cannot be empty.";
     }
 
     if (!formData.author.trim()) {
+      console.log("Title cannot be empty.aut");
       isValid = false;
       newErrors.author = "Author cannot be empty.";
     }
@@ -69,7 +71,7 @@ const BookFormModal = ({ book, onBookSaved, onClose }: Props) => {
     setFeedback({ message: "", type: "" });
 
     try {
-      let response = await saveBook(formData, book?._id);
+      const response = await saveBook(formData, book?._id);
       console.log(response);
       if (response.ok) {
         setFeedback({ message: "Book saved successfully!", type: "success" });
@@ -128,6 +130,9 @@ const BookFormModal = ({ book, onBookSaved, onClose }: Props) => {
                 value={formData.title}
                 onChange={handleChange}
               />
+              {errors.title && (
+                <p className="mt-1 text-sm text-red-600">{errors.title}</p>
+              )}
               <div>
                 <label
                   htmlFor="genre"
@@ -159,6 +164,9 @@ const BookFormModal = ({ book, onBookSaved, onClose }: Props) => {
                   value={formData.author}
                   onChange={handleChange}
                 />
+                {errors.author && (
+                  <p className="mt-1 text-sm text-red-600">{errors.author}</p>
+                )}
               </div>
               <div>
                 <label
@@ -207,10 +215,6 @@ const BookFormModal = ({ book, onBookSaved, onClose }: Props) => {
                   onChange={handleChange}
                 />
               </div>
-
-              {errors.title && (
-                <p className="mt-1 text-sm text-red-600">{errors.title}</p>
-              )}
             </div>
           </div>
           <div className="mt-5 flex justify-end">

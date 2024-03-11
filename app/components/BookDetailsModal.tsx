@@ -8,7 +8,7 @@ import { Book } from "../common/type";
 
 interface Props {
   bookId: string;
-  showAdminControls: Boolean;
+  showAdminControls: boolean;
 }
 
 const BookDetailsModal = ({ bookId, showAdminControls }: Props) => {
@@ -23,8 +23,6 @@ const BookDetailsModal = ({ bookId, showAdminControls }: Props) => {
     fetchBook();
   }, [bookId]);
   const onBookUpdated = (book: Book) => {
-    console.log("Details edit");
-    console.log(book);
     setBook(book);
   };
   if (!book) {

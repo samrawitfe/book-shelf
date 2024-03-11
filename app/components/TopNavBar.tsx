@@ -6,10 +6,22 @@ import AddBookButton from "./AddBookButton";
 
 interface Props {
   isAdmin: boolean;
+  onSearch: (query: string) => void;
   onAddBook: (book: Book) => void;
 }
-const TopNavBar = ({ isAdmin = false, onAddBook }: Props) => {
-  const handleSearchClick = () => console.log("Search Clicked");
+const TopNavBar = ({ isAdmin = false, onSearch, onAddBook }: Props) => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const handleSearchClick = (query: string) => {
+    onSearch(query);
+  };
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    onSearch(query.trim());
+    // if (query.trim() === "") {
+    //   onSearch("");
+    // }
+  };
 
   return (
     <div className="navbar bg-base-100 px-4">
@@ -25,8 +37,10 @@ const TopNavBar = ({ isAdmin = false, onAddBook }: Props) => {
           type="text"
           placeholder="Search books..."
           className="input input-bordered w-full"
+          value={searchQuery}
+          onChange={handleInputChange}
         />
-        <button className="btn" onClick={handleSearchClick}>
+        <button className="btn" onClick={() => handleSearchClick(searchQuery)}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-6 w-6"
